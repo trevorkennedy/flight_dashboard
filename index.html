@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <!-- <base href="http://trevorkennedy.com/isr/index.html"> -->
+  <base href="index.html">
+  <meta charset="utf-8">
+  <title ng-bind="$root.title">Dashboard</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
+  <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
+  <link rel="stylesheet" href="plugins/mapglyphs/2.0/mapglyphs.css">
+  <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.css" />
+  <link rel="stylesheet" href="bower_components/angular-gantt/assets/angular-gantt.css" />
+  <link rel="stylesheet" href="bower_components/angular-gantt/assets/angular-gantt-plugins.css" />
+  <!-- Theme  -->
+  <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+  <!-- AngularJS -->
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="bower_components/Chart.js/Chart.min.js"></script>
+  <script src="bower_components/angular-chart.js/angular-chart.js"></script>
+  <script src="bower_components/moment/moment.js"></script>
+  <script src="bower_components/angular-moment/angular-moment.js"></script>
+  <script src="bower_components/angular-gantt/assets/angular-gantt.js"></script>
+  <script src="bower_components/angular-gantt/assets/angular-gantt-plugins.js"></script>
+  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+  <script src="bower_components/angular-gantt/assets/angular-gantt.js"></script>
+  <script src="bower_components/angular-gantt/assets/angular-gantt-plugins.js"></script>
+  <script src="dist/js/angular-loadscript.js"></script>
+  <script src="dist/js/angular-loadexternal.js"></script>
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.34.2/es6-shim.min.js"></script>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+  <script src="bower_components/papaparse/papaparse.js"></script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+  <script>
+    $.widget.bridge('uibutton', $.ui.button);
+  </script>
+  <script src="bower_components/slimScroll/jquery.slimscroll.min.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
+  <script src="bower_components/d3/d3.min.js"></script>
+  <script src="bower_components/nvd3/nv.d3.js"></script>
+  <script src="bower_components/ng-nvd3/dist/ng-nvd3.js"></script>
+  <script src="bower_components/iCheck/icheck.min.js"></script>
+  <script src="bower_components/jquery-knob/js/jquery.knob.js"></script>
+  <script src="bower_components/ng-knob/dist/ng-knob.js"></script>
+  <!-- Data -->
+  <script src="data/sorties_year.js"></script>
+  <script src="data/hours_year.js"></script>
+  <script src="data/sorties_day.js"></script>
+  <script src="data/hours_day.js"></script>
+  <!-- App -->
+  <script src="dist/js/app.js"></script>
+  <script src="dist/js/dashboard-angular-app.js"></script>
+  <script src="dist/js/dashboard-angular-routes.js"></script>
+  <script src="dist/js/dashboard-angular-controllers.js"></script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+  <div class="wrapper">
+
+    <style>
+      .marking {
+        background-color: green;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        padding: 0px;
+        margin-left: 0;
+        left: 0;
+        margin-right: 0;
+        right: 0;
+        border-top: 0px;
+      }
+    </style>
+
+    <div ng-include="'content/dashboard_sidebar.html'"></div>
+    <!-- Main content -->
+    <div class="content-wrapper">
+      <section class="content">
+        <div ui-view></div>
+      </section>
+    </div>
+    <!-- /.content-wrapper -->
+  </div>
+  <!-- ./wrapper -->
+</body>
+
+</html>

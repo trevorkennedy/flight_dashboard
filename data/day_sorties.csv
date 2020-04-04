@@ -1,0 +1,22 @@
+Country,Name,Platform,Flown
+iq,Sortie 1,Constant Hawk,y
+iq,Sortie 2,Desert Owl,y
+iq,Sortie 3,C-20,y
+iq,Sortie 4,MC-12,n
+iq,Sortie 5,GR-4,n
+af,Sortie 6,MQ-1B,n
+af,Sortie 7,P-3,n
+af,Sortie 8,Constant Hawk,n
+af,Sortie 9,Desert Owl,y
+af,Sortie 10,C-20,y
+af,Sortie 11,MC-12,y
+af,Sortie 12,GR-4,n
+ye,Sortie 13,MQ-1B,n
+ye,Sortie 14,P-3,n
+ye,Sortie 15,Constant Hawk,y
+ye,Sortie 16,Desert Owl,y
+ye,Sortie 17,C-20,y
+ye,Sortie 18,MC-12,n
+ye,Sortie 19,GR-4,y
+ye,Sortie 20,MQ-1B,y
+ye,Sortie 21,P-3,n

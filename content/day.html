@@ -1,0 +1,202 @@
+<!-- Main content -->
+<section class="content" ng-controller="DayController">
+
+    <link rel="stylesheet" href="bower_components/nvd3/nv.d3.css"/>
+	
+	<style type="text/css">
+		html, body{ height:100%; padding:0px; margin:0px; overflow: hidden;}
+		.custom_progress{
+			display: inline-block;
+			vertical-align: top;
+			text-align: center;
+			height:100%;
+		}
+		.custom_progress.planned{
+			background-color: #4CC259;
+		}
+		.custom_progress.early{
+			background-color: #88BFF5;
+		}
+		.custom_progress.late{
+			background-color: #d96c49;
+		}
+		.custom_progress.collecting{
+			background-color: #cc66ff;
+		}
+		.mx .gantt_cell, .odd.mx .gantt_cell,
+		.mx .gantt_task_cell, .odd.mx .gantt_task_cell{
+			background-color: #FDE0E0;
+		}
+		.wx .gantt_cell, .odd.wx .gantt_cell,
+		.wx .gantt_task_cell, .odd.wx .gantt_task_cell {
+			background-color: #BEE4BE;
+		}
+		.ops .gantt_cell, .odd.ops .gantt_cell,
+		.ops .gantt_task_cell, .odd.ops .gantt_task_cell {
+			background-color: #ffff99;
+		}
+		#gantt{
+			width:100%;
+		}
+		.gantt-side {
+				width: 300px;
+		}
+		#bar_chart { 
+				height:190px; 
+		}
+		#chart svg {
+						height: 235px;
+		}
+		.gantt-task-group, .gantt-task-group-left-main, .gantt-task-group-right-main {
+			background-color: transparent;
+		}
+		.gantt-task-group-left-symbol, .gantt-task-group-right-symbol {
+			border-left: transparent;
+			border-right: transparent;
+		}
+		.actual {background-color: #9FC5F8 !important;}
+		.planned {background-color: #C20808 !important;}
+		.as_planned {background-color: #4F504F !important;}
+		.pct_actual {background-color: #42AB5B !important;}
+		.white_text {color: #fff;}
+	</style>
+	
+  <div class="row">
+  
+	<div class="col-xs-4 col-md-4">
+	  <!-- small box -->
+	  <div class="small-box planned">
+		<div class="inner white_text">
+		  <h3>{{ total_planned | number:0 }}</h3>
+		  <p>Total Planned</p>
+		</div>
+		<div class="icon">
+		  <i class="ion ion-stats-bars"></i>
+		</div>
+	  </div>
+	</div><!-- ./col -->
+	
+	<div class="col-xs-4 col-md-4">
+	  <!-- small box -->
+	  <div class="small-box actual">
+		<div class="inner">
+		  <h3>{{ total_actual | number:0 }}</h3>
+		  <p>Total Actual</p>
+		</div>
+		<div class="icon">
+		  <i class="ion ion-speedometer"></i>
+		</div>
+	  </div>
+	</div><!-- ./col -->
+	
+	<div class="col-xs-4 col-md-4">
+	  <!-- small box -->
+	  <div class="small-box pct_actual">
+		<div class="inner">
+		  <h3>{{ total_percent | number:1 }}<sup style="font-size: 20px">%</sup></h3>
+		  <p>Percent Actual</p>
+		</div>
+		<div class="icon">
+		  <i class="ion ion-ios-pie-outline"></i>
+		</div>
+	  </div>
+	</div><!-- ./col -->
+	
+  </div><!-- /.row -->
+  
+  <!-- Main row -->
+  <div class="row">
+    <!-- Left Bar Chart -->
+    <div class="col-sm-5">
+        <div class="box box-success">
+            <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-bars"></i> Country Totals</h3>
+            <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+            </div>
+            </div>
+            <div class="box-body">
+                <canvas id="bar_chart"
+                    class="chart chart-bar" 
+                    chart-data="data" 
+                    chart-labels="labels" 
+                    chart-series="series" 
+                    chart-colours="colors"
+                ></canvas>
+                <chart-legend>
+                    <ul class="line-legend">
+                        <li><span class="planned"></span>Planned</li>
+                        <li><span class="actual"></span>Actual</li>
+                    </ul>
+                </chart-legend>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- ./col -->
+    
+    <!-- Right Bar Chart -->
+    <div class="col-sm-7">
+        <div class="box box-success">
+            <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-bar-chart"></i> Platform Totals</h3>
+            <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+            </div>
+            </div>
+            <div class="box-body">
+                <div id="chart"><svg></svg></div>
+            </div><!-- /.box-body -->
+       </div><!-- /.box -->
+   </div><!-- ./col -->
+          
+</div><!-- /.row (main row) -->
+       
+ <!-- Gantt Chart --> 
+ <div class="row">
+    <section class="col-lg-12 connectedSortable">
+		
+		<div class="nav-tabs-custom">
+			<!-- Tabs within a box -->
+			<ul class="nav nav-tabs pull-right">
+			  <li ng-class="{active: active_tab == 'af' }"><a ui-sref="hours_day({ tab: 'af' })"><i class="mg mg-fw map-af"></i> Afghanistan</a></li>
+			  <li ng-class="{active: active_tab == 'iq' }"><a ui-sref="hours_day({ tab: 'iq' })"><i class="mg mg-fw map-iq"></i><i class="mg mg-fw map-ye"></i> Iraq/Syria</a></li>
+			  <li ng-class="{active: active_tab == 'ye' }"><a ui-sref="hours_day({ tab: 'ye' })"><i class="mg mg-fw map-ye"></i> Yemen</a></li>
+			  <li class="pull-left header"><i class="fa fa-tasks"></i> Schedule</li>
+			</ul>
+			<div class="tab-content padding">
+				
+					<div ui-view>
+						<div gantt 
+							data="gantt_data"
+							view-scale="hour"
+							headers="['day', 'hour']"
+							headers-formats="headersFormats"
+							from-date="from_date"
+							to-date="to_date"
+							allow-side-resizing="false">
+							<gantt-tree></gantt-tree>
+							<gantt-groups></gantt-groups>
+							<gantt-tooltips></gantt-tooltips>
+							<gantt-progress></gantt-progress>
+							<gantt-table
+								columns="['model.data', 'from', 'to']"
+								headers="{'model.data': 'Frame', 'from': 'From', 'to': 'To'}"
+								formatters="columnsFormatters">
+							</gantt-table>
+						</div>
+					</div>
+					<chart-legend>
+							<ul class="line-legend">
+									<li><span class="planned"></span>Planned</li>
+									<li><span class="as_planned"></span>As Planned</li>
+                  <li><span class="actual"></span>Actual</li>
+									
+							</ul>
+					</chart-legend>
+			</div>    
+		</div><!-- /.nav-tabs-custom -->
+	</section><!-- /.Left col -->
+  </div><!-- /.row (main row) -->
+  
+</section><!-- /.content -->

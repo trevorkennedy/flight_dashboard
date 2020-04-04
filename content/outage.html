@@ -1,0 +1,175 @@
+        <!-- Main content -->
+        <section class="content" ng-controller="YearController">
+            
+          <div class="row">
+     
+            <section class="col-lg-12">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-power-off"></i> Outages</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                    </div>
+                    <div class="box-body" >
+                        <div id="sunburst"></div>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </section><!-- /.Middle col -->
+            
+          </div><!-- /.row (main row) -->
+          
+            <script type="text/javascript-lazy">
+	
+	
+	// Take a 2-column CSV and transform it into a hierarchical structure suitable
+	// for a partition layout. The first column is a sequence of step names, from
+	// root to leaf, separated by hyphens. The second column is a count of how 
+	// often that sequence occurred.
+	function buildHierarchy(csv) {
+	  var root = {"name": "", "children": []};
+	  for (var i = 0; i < csv.length; i++) {
+		var sequence = csv[i][0];
+		var size = +csv[i][1];
+		if (isNaN(size)) { // e.g. if this is a header row
+		  continue;
+		}
+		var parts = sequence.split("-");
+		var currentNode = root;
+		for (var j = 0; j < parts.length; j++) {
+		  var children = currentNode["children"];
+		  var nodeName = parts[j];
+		  var childNode;
+		  if (j + 1 < parts.length) {
+	   // Not yet at the end of the sequence; move down the tree.
+		var foundChild = false;
+		for (var k = 0; k < children.length; k++) {
+		  if (children[k]["name"] == nodeName) {
+			childNode = children[k];
+			foundChild = true;
+			break;
+		  }
+		}
+	  // If we don't already have a child node for this branch, create it.
+		if (!foundChild) {
+		  childNode = {"name": nodeName, "children": []};
+		  children.push(childNode);
+		}
+		currentNode = childNode;
+		  } else {
+		// Reached the end of the sequence; create a leaf node.
+		childNode = {"name": nodeName, "size": size};
+		children.push(childNode);
+		  }
+		}
+	  }
+	  return root;
+	};
+	
+	// Main function to draw and set up the visualization, once we have the data.
+	function createVisualization(data, elem_id) {
+		var margin = {top: 10, right: 10, bottom: 10, left: 10};
+		var clientWidth = document.getElementById(elem_id).clientWidth;
+
+		var width = clientWidth - margin.left - margin.right,
+			height = clientWidth - margin.top - margin.bottom,
+			radius = Math.min(width, height) / 2;
+
+		var x = d3.scale.linear()
+			.range([0, 2 * Math.PI]);
+
+		var y = d3.scale.linear()
+			.range([0, radius]);
+
+		var color = d3.scale.category20c();
+
+		var svg = d3.select("#"+elem_id).append("svg")
+			.attr("width", width)
+			.attr("height", height)
+			.datum(data)
+			.append("g")
+			.attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
+
+		var partition = d3.layout.partition()
+			.value(function(d) { return d.size; });
+
+		var arc = d3.svg.arc()
+			.startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+			.endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+			.innerRadius(function(d) { return Math.max(0, y(d.y)); })
+			.outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+
+		var g = svg.selectAll("g")
+			.data(partition.nodes)
+			.enter().append("g");
+
+		var path = g.append("path")
+			.attr("d", arc)
+			.attr("stroke", "#fff")
+			.attr("fill-rule", "evenodd")
+			.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+			.on("click", click);
+
+		var text = g.append("text")
+			.attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+			.attr("x", function(d) { return y(d.y); })
+			.attr("font-family", "sans-serif")
+			.attr("font-size", "12px")
+			.attr("font-weight", "bold")
+			.attr("dx", "6") // margin
+			.attr("dy", ".35em") // vertical-align
+			.text(function(d) { return d.name; });
+
+		function click(d) {
+			// fade out all text elements
+			text.transition().attr("opacity", 0);
+
+			path.transition()
+			.duration(750)
+			.attrTween("d", arcTween(d))
+			.each("end", function(e, i) {
+				// check if the animated element's data e lies within the visible angle span given in d
+				if (e.x >= d.x && e.x < (d.x + d.dx)) {
+					// get a selection of the associated text element
+					var arcText = d3.select(this.parentNode).select("text");
+					// fade in the text element and recalculate positions
+					arcText.transition().duration(750)
+					.attr("opacity", 1)
+					.attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
+					.attr("x", function(d) { return y(d.y); });
+				}
+			});
+		}
+
+		function arcTween(d) {
+			var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+				yd = d3.interpolate(y.domain(), [d.y, 1]),
+				yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+			return function(d, i) {
+				return i
+					? function(t) { return arc(d); }
+					: function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+			};
+		}
+
+		function computeTextRotation(d) {
+			return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
+		}
+	};
+	
+	function createViz(csv_file, elem_id) {
+		// Use d3.text and d3.csv.parseRows so that we do not need to have a header
+		// row, and can receive the csv as an array of arrays.
+		d3.text(csv_file, function(text) {
+		  var csv = d3.csv.parseRows(text);
+		  var json = buildHierarchy(csv);
+		  createVisualization(json, elem_id);
+		});
+	};
+
+	createViz("data/outage.csv", "sunburst");
+	
+	        </script>
+         
+        </section><!-- /.content -->

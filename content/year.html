@@ -1,0 +1,139 @@
+        <!-- Main content -->
+        <section class="content" ng-controller="YearController">
+            
+            <style>
+                div.icon {padding: 25px;}
+                #line {height: 400px;}
+                h2 {text-align: center;}
+                .af {background-color: rgba(100,100,0, .7) !important}
+                .iq {background-color: rgba(60,141,255, .7) !important}
+                .ye {background-color: #949FB1 !important}
+            </style>
+      
+          <div class="row">
+              
+            <div class="col-lg-4">
+              <!-- small box -->
+              <div class="small-box ye">
+                <span class="small-box-footer"><i class="mg mg-fw map-ye"></i> Yemen</span>
+                <div class="inner text-center">
+                    <ui-knob value="knob_value_ye" options="knob_options"></ui-knob>
+                </div>
+              </div>
+            </div><!-- ./col -->
+            
+            <div class="col-lg-4">
+              <!-- small box -->
+              <div class="small-box iq">
+                <span class="small-box-footer"><i class="mg mg-fw map-iq"></i><i class="mg mg map-sy"></i> Iraq/Syria</span>
+                <div class="inner text-center">
+                    <ui-knob value="knob_value_iq" options="knob_options"></ui-knob>
+                </div>
+              </div>
+            </div><!-- ./col -->
+            
+            <div class="col-lg-4">
+              <!-- small box -->
+              <div class="small-box af">
+                <span class="small-box-footer"><i class="mg mg-fw map-af"></i> Afghanistan</span>
+                <div class="inner text-center">
+                    <ui-knob value="knob_value_af" options="knob_options"></ui-knob>
+                </div>
+              </div>
+            </div><!-- ./col -->
+
+          </div><!-- /.row -->
+          
+          <div class="row">
+              
+            <div class="col-md-12">
+          
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><i class="fa fa-bars"></i> Platform Totals</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+                <div id="scroll_box" class="box-body">
+                    
+                    <script type="text/javascript-lazy">
+                        $('.progress-bar[data-toggle="tooltip"]').tooltip({
+                            animated: 'fade'
+                        });
+                        $('#scroll_box').slimScroll({height: '300px'});
+                    </script>
+
+                  <table class="table table-bordered table-hover">
+                      <tr>
+                        <th style="width: 25%">Platform</th>
+                        <th style="width: 25%"><i class="mg mg-fw map-ye"></i> Yemen</th>
+                        <th style="width: 25%"><i class="mg mg-fw map-iq"></i><i class="mg mg map-sy"></i> Iraq/Syria</th>
+                        <th style="width: 25%"><i class="mg mg-fw map-af"></i> Afghanistan</th>
+                      </tr>
+                           
+                      <tr ng-repeat="row in table_data">
+                        <td>{{row.name}}</td>
+                        <td>
+                            <div class="progress progress-xs" data-toggle="tooltip" title="Yemen Actual ({{ row.ye_actual | number:0 }})" data-placement="top">
+                                <div class="progress-bar progress-bar-yellow" ng-attr-style="width: {{ row.ye_actual / max_ye * 100 }}%"></div>
+                            </div>
+                            <div class="progress progress-xs progress-striped" data-toggle="tooltip" title="Yemen Planned ({{ row.ye_planned | number:0 }})" data-placement="bottom">
+                                <div class="progress-bar progress-bar-primary" ng-attr-style="width: {{ row.ye_planned / max_ye * 100 }}%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="progress progress-xs" data-toggle="tooltip" title="Iraq Actual ({{ row.iq_actual | number:0 }})" data-placement="top">
+                                <div class="progress-bar progress-bar-yellow" ng-attr-style="width: {{ row.iq_actual / max_iq * 100 }}%"></div>
+                            </div>
+                            <div class="progress progress-xs progress-striped" data-toggle="tooltip" title="Iraq Planned ({{ row.iq_planned | number:0 }})" data-placement="bottom">
+                                <div class="progress-bar progress-bar-primary" ng-attr-style="width: {{ row.iq_planned / max_iq * 100 }}%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="progress progress-xs" data-toggle="tooltip" title="Afghanistan Actual ({{ row.af_actual | number:0 }})" data-placement="top">
+                                <div class="progress-bar progress-bar-yellow" ng-attr-style="width: {{ row.af_actual / max_af * 100 }}%"></div>
+                            </div>
+                            <div class="progress progress-xs progress-striped" data-toggle="tooltip" title="Afghanistan Planned ({{ row.af_planned | number:0 }})" data-placement="bottom">
+                                <div class="progress-bar progress-bar-primary" ng-attr-style="width: {{ row.af_planned / max_af * 100 }}%;"></div>
+                            </div>
+                        </td>
+                      </tr>
+                  </table>
+                  
+                    <chart-legend>
+                        <ul class="line-legend">
+                            <li><span style="background-color:#F39C12"></span>Actual</li>
+                            <li><span style="background-color:#3C8DBC"></span>Planned</li>
+                        </ul>
+                    </chart-legend>
+                </div><!-- /.box-body -->
+                
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+
+            <section class="col-lg-12 ">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-area-chart"></i> Previous Activity</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                    </div>
+                    <div class="box-body" >
+                        <canvas id="line" 
+                            class="chart chart-line" 
+                            chart-data="line_data" 
+                            chart-labels="labels" 
+                            chart-legend="true" 
+                            chart-series="series" 
+                            chart-colours="colors"
+                        ></canvas>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </section><!-- /.Left col -->
+          </div><!-- /.row (main row) -->
+         
+        </section><!-- /.content -->
